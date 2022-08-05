@@ -122,7 +122,6 @@ paths:
 components:
 
   schemas:
-
     GeneratedSearchFilter:
       type: object
       required:
@@ -147,6 +146,8 @@ components:
         - is_vegetarian_and_number_of_servings
         - ingredient_and_number_of_servings
         - excl_ingredient_and_incl_instruction
+        - instruction_and_is_vegetarian_and_number_of_servings
+        - ingredients_and_instruction_and_is_vegetarian_and_number_of_servings
       example: is_vegetarian
       description: Predefined filter criteria, e.g. vegetarian criteria or number of servings
 
@@ -183,7 +184,7 @@ components:
       properties:
         recipe_id:
           type: integer
-          format: int64
+          format: int64 # Long
           example: 4
         name:
           type: string
@@ -211,11 +212,11 @@ components:
           example: false
         number_of_servings:
           type: integer
-          format: int32
+          format: int32 # Integer
           example: 4
         recipeIngredients:
           type: array
-          uniqueItems: true
+          uniqueItems: true # Set<RecipeIngredient>
           description: A set of recipe ingredients
           items:
             $ref: '#/components/schemas/GeneratedRecipeIngredient'
@@ -225,6 +226,7 @@ components:
       description: An ingredient object
       required:
         - recipe_ingredient_id
+        - recipe_id
       properties:
         recipe_ingredient_id:
           type: integer

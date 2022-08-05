@@ -29,18 +29,11 @@ spring:
   h2:
     console:
       enabled:
-        true  # Enable embedded GUI console in a browser http://localhost:9090/h2-console
+        true
+      path:
+        /h2-console # Enable embedded GUI console in a browser http://localhost:9090/v1/h2-console
 
   sql:
     init:
       data-locations:
         classpath:data/ingredients.sql, classpath:data/recipes.sql, classpath:data/recipe-ingredients.sql
-
-  # Swagger API
-  mvc:
-    pathmatch:
-      matching-strategy:
-        ANT_PATH_MATCHER
-
-
-

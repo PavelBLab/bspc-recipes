@@ -2,6 +2,7 @@ package com.cookbook.recipes.repository;
 
 import com.cookbook.recipes.model.Recipe;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -9,7 +10,8 @@ import java.util.Optional;
 import java.util.Set;
 
 @Repository
-public interface RecipeRepository extends JpaRepository<Recipe, Long> {
+public interface RecipeRepository extends JpaRepository<Recipe, Long>,
+        JpaSpecificationExecutor<Recipe> {
 
     Optional<Recipe> getRecipeById(Long recipeId);
 

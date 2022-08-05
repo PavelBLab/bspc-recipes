@@ -31,13 +31,6 @@ public class RecipesOperation implements RecipesApi {
     }
 
     @Override
-    public ResponseEntity<GeneratedRecipes> postRecipesBySearchFilter(
-            final GeneratedSearchFilter generatedSearchFilter) {
-        val generatedRecipes = recipeService.postRecipesBySearchFilter(generatedSearchFilter);
-        return ResponseEntity.ok(GeneratedRecipes.builder().generatedRecipes(generatedRecipes).build());
-    }
-
-    @Override
     public ResponseEntity<Void> createRecipe(final GeneratedRecipe generatedRecipe) {
         val recipeId = recipeService.createRecipe(generatedRecipe);
         return ResponseEntity.created(getUri(recipeId)).build();
@@ -53,6 +46,13 @@ public class RecipesOperation implements RecipesApi {
     public ResponseEntity<Void> deleteRecipe(final Long recipeId) {
         recipeService.deleteRecipe(recipeId);
         return ResponseEntity.accepted().build();
+    }
+
+    @Override
+    public ResponseEntity<GeneratedRecipes> postRecipesBySearchFilter(
+            final GeneratedSearchFilter generatedSearchFilter) {
+        val generatedRecipes = recipeService.postRecipesBySearchFilter(generatedSearchFilter);
+        return ResponseEntity.ok(GeneratedRecipes.builder().generatedRecipes(generatedRecipes).build());
     }
 
     private static URI getUri(final String identity) {
