@@ -1,0 +1,337 @@
+openapi: 3.0.3
+info:
+  title: Recipe Manager Application
+  version: "@project.version@1.0.1"
+  description: >-
+    An API that allows users to obtain existing information on recipes using specific
+    criteria and adds new recipes, update existing ones or delete old recipes
+  contact:
+    name: Pavel B
+    email: pavel.b@gmail.com
+  license:
+    name: License 1.0
+    url: http://localhost:8082/licenses/LICENSE-1.0
+  termsOfService: https://recipe-manager-app-test-case.nl/terms-of-use
+
+servers:
+  - url: http://localhost:8082/api
+    description: Development server (uses test data)
+  - url: http://localhost:9090/v1
+    description: Production server (uses live data)
+
+
+paths:
+  /recipes:
+    get:
+      tags:
+        - recipes
+      operationId: GetAllRecipes
+      description: Obtaining information about all recipes from the database
+      responses:
+        '200':
+          description: The successful pull of recipes info
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneratedRecipes'
+    post:
+      tags:
+        - recipes
+      operationId: CreateRecipe
+      description: Adding a new recipe to the database
+      requestBody:
+        $ref: '#/components/requestBodies/GeneratedRecipe'
+      responses:
+        '201':
+          description: Successfully created one recipe
+          headers:
+            Location:
+              description: Recipe id of the created recipe
+              schema:
+                type: string
+                format: uri
+                example: /api/recipes/1
+        default:
+          $ref: '#/components/responses/Problem'
+
+  /recipes/{recipe_id}:
+    get:
+      operationId: GetRecipeById
+      description: Obtaining information about the specific recipe
+      tags:
+        - recipes
+      parameters:
+        - $ref: '#/components/parameters/recipe_id'
+      responses:
+        '200':
+          description: Successfully got one recipe by id
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneratedRecipe'
+        default:
+          $ref: '#/components/responses/Problem'
+
+    put:
+      operationId: UpdateRecipe
+      description: Updating existing recipe
+      tags:
+        - recipes
+      parameters:
+        - $ref: '#/components/parameters/recipe_id'
+      requestBody:
+        $ref: '#/components/requestBodies/GeneratedRecipe'
+      responses:
+        '204':
+          description: The recipe is successfully updated
+        default:
+          $ref: '#/components/responses/Problem'
+    delete:
+      operationId: DeleteRecipe
+      description: Deleting one recipe using recipe id
+      tags:
+        - recipes
+      parameters:
+        - $ref: '#/components/parameters/recipe_id'
+      responses:
+        '202':
+          description: The recipe was successfully deleted
+        default:
+          $ref: '#/components/responses/Problem'
+
+  /recipes/filter:
+    post:
+      operationId: PostRecipesBySearchFilter
+      description: Obtaining information recipes using a search filter
+      tags:
+        - recipes
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GeneratedSearchFilter'
+      responses:
+        '200':
+          description: Successfully got a list of recipes filtered by requested criteria
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneratedRecipes'
+
+components:
+
+  schemas:
+
+    GeneratedSearchFilter:
+      type: object
+      required:
+        - filter_criteria
+        - filter_value
+      properties:
+        filter_criteria:
+          $ref: '#/components/schemas/GeneratedFilterCriteria'
+        filter_values:
+          $ref: '#/components/schemas/GeneratedFilterValues'
+      description: A search filter is used to get a required list of recipes
+
+    GeneratedFilterCriteria:
+      type: string
+      enum:
+        - instruction
+        - is_vegetarian
+        - number_of_servings
+        - number_of_servings_greater_than_equal
+        - incl_ingredients
+        - excl_ingredients
+        - is_vegetarian_and_number_of_servings
+        - ingredient_and_number_of_servings
+        - excl_ingredient_and_incl_instruction
+      example: is_vegetarian
+      description: Predefined filter criteria, e.g. vegetarian criteria or number of servings
+
+    GeneratedFilterValues:
+      type: object
+      description: >-
+        Values which are used to filter recipes, e.g.  3 (number of servings) or
+        true (if vegetarian)
+      properties:
+        ingredients:
+          $ref: '#/components/schemas/IngredientNames'
+        instruction:
+          $ref: '#/components/schemas/Instruction'
+        is_vegetarian:
+          $ref: '#/components/schemas/IsVegetarian'
+        number_of_servings:
+          $ref: '#/components/schemas/NumberOfServings'
+
+    GeneratedRecipes:
+      type: object
+      properties:
+        generated_recipes:
+          type: array
+          description: A list of recipes info
+          items:
+            $ref: '#/components/schemas/GeneratedRecipe'
+
+    GeneratedRecipe:
+      type: object
+      description: A model contains Recipe info
+      required:
+        - recipe_id
+        - name
+      properties:
+        recipe_id:
+          type: integer
+          format: int64
+          example: 4
+        name:
+          type: string
+          minLength: 1
+          maxLength: 80
+          example: Cheese pizza
+        description:
+          type: string
+          example: Description
+        image:
+          type: string
+          example: pizza.jpg
+        instruction:
+          type: string
+          example: Bake at 200 for 1 hour
+        created_at:
+          type: string
+          format: date
+          description: Creation date of the recipe
+          example: '2022-07-11'
+        is_vegetarian:
+          type: boolean
+          description: >-
+            True if vegetarian, otherwise false
+          example: false
+        number_of_servings:
+          type: integer
+          format: int32
+          example: 4
+        recipeIngredients:
+          type: array
+          uniqueItems: true
+          description: A set of recipe ingredients
+          items:
+            $ref: '#/components/schemas/GeneratedRecipeIngredient'
+
+    GeneratedRecipeIngredient:
+      type: object
+      description: An ingredient object
+      required:
+        - recipe_ingredient_id
+      properties:
+        recipe_ingredient_id:
+          type: integer
+          format: int64
+          example: 4
+        recipe_id:
+          type: integer
+          format: int64
+          example: 1
+        ingredient:
+          $ref: '#/components/schemas/GeneratedIngredient'
+        amount:
+          type: integer
+          format: int32
+          example: 100
+        measure:
+          $ref: '#/components/schemas/GeneratedMeasure'
+
+    GeneratedIngredient:
+      type: object
+      description: A model contains ingredient info
+      required:
+        - ingredient_id
+      properties:
+        ingredient_id:
+          type: integer
+          format: int64
+          example: 4
+        name:
+          type: string
+          minLength: 1
+          maxLength: 50
+          example: sugar
+
+    GeneratedMeasure:
+      type: string
+      enum:
+        - gram
+        - ml
+        - cup
+        - teaspoon
+        - tablespoon
+      example: gram
+      description: Measures, e.g. gram, ml, tablespoon or teaspoon
+
+    IngredientNames:
+      type: array
+      uniqueItems: true
+      description: A list of ingredient's names
+      items:
+        type: string
+      example: [ "egg", "sugar", "salmon" ]
+
+    Instruction:
+      type: string
+      description: Cooking instruction can be fully or partly. Case insensitive
+      example: Bake at 200 for 1 hour
+
+    IsVegetarian:
+      type: boolean
+      description: True if vegetarian, otherwise false
+      example: false
+
+    NumberOfServings:
+      type: integer
+      description: A number of servings of the recipe
+      format: int32
+      example: 4
+
+    # Schema for error response body
+    Problem:
+      type: object
+      description: An error occurred - see status code and problem object for more information
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+
+  requestBodies:
+    GeneratedRecipe:
+      description: A new recipe
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/GeneratedRecipe'
+
+  parameters:
+    recipe_id:
+      name: recipe_id
+      in: path
+      description: A unique identification of recipe
+      required: true
+      schema:
+        type: integer
+        format: int64
+        example: 1
+
+  responses:
+    Problem:
+      description: An error occurred
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Problem'
+
