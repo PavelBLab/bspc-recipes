@@ -120,7 +120,6 @@ paths:
                 $ref: '#/components/schemas/GeneratedRecipes'
 
 components:
-
   schemas:
     GeneratedSearchFilter:
       type: object

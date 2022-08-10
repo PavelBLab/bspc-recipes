@@ -19,8 +19,8 @@ Also, the number of query methods increases rapidly as the use cases increases.
 At some point, there are many overlapping criteria across the query methods and if there is a change
 in any one of those, we’ll have to make changes in multiple query methods.
 
-Also, the length of the query method might increase significantly when we have long
-field names and multiple criteria in our query. Plus, it might take a while for someone
+Also, the length of the query method might increase significantly when we have long variable
+names and multiple criteria in our query. Plus, it might take a while for someone
 to understand such a lengthy query and its purpose
 
 Specifications allow us to write queries programmatically.
@@ -30,9 +30,9 @@ Because of this, we can build queries dynamically based on user input.
 public class RecipeSpecifications {
 
     /*
-    * The Criteria Query API allows us to join the two tables when creating the Specification.
-    *  As a result, we'll be able to include the fields from the Recipe entity inside our queries:
-    * */
+     * The Criteria Query API allows us to join the two tables when creating the Specification.
+     *  As a result, we'll be able to include the fields from the Ingredient entity inside our queries:
+     * */
     public static Specification<Recipe> ingredientsContains(Set<String> ingredients) {
         return (recipeRoot, criteriaQuery, criteriaBuilder) -> {
             Join<Recipe, RecipeIngredient> recipeIngredientsJoin = recipeRoot

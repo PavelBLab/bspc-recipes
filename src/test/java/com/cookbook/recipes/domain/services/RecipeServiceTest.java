@@ -1,6 +1,6 @@
 package com.cookbook.recipes.domain.services;
 
-import com.cookbook.recipes.domain.exceptoin.BusinessServiceException;
+import com.cookbook.recipes.domain.exception.BusinessServiceException;
 import com.cookbook.recipes.mapper.RecipeMapper;
 import com.cookbook.recipes.mapper.SearchFilterMapper;
 import com.cookbook.recipes.model.*;
@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import static com.cookbook.recipes.repository.spec.RecipeSpecifications.*;
 import static com.cookbook.recipes.util.TestDataFactory.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;

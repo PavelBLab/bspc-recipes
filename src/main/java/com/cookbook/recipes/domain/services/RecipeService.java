@@ -1,6 +1,6 @@
 package com.cookbook.recipes.domain.services;
 
-import com.cookbook.recipes.domain.exceptoin.ExceptionHandler;
+import com.cookbook.recipes.domain.exception.ExceptionHandler;
 import com.cookbook.recipes.mapper.RecipeMapper;
 import com.cookbook.recipes.mapper.SearchFilterMapper;
 import com.cookbook.recipes.model.*;
@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
@@ -81,8 +82,10 @@ public class RecipeService {
 
         val ingredientsDb = ingredientRepository.findAll(
                 where(ingredientNamesIn(ingredientNames)));
-        // Alternative method
-        // val ingredientsDb = ingredientRepository.findAllByNameIn(ingredientNames);
+        /*
+        Alternative method
+        val ingredientsDb = ingredientRepository.findAllByNameIn(ingredientNames);
+        */
 
         val recipeIngredients = generatedRecipe.getRecipeIngredients()
                 .stream()
@@ -100,7 +103,7 @@ public class RecipeService {
         return recipeId.toString();
     }
 
-
+    @Transactional
     public void updateRecipe(final Long recipeId, final GeneratedRecipe generatedRecipe) {
         val recipeDb = recipeRepository.getRecipeById(recipeId);
 

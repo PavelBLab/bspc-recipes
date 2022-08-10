@@ -12,27 +12,10 @@ import javax.persistence.criteria.Join;
 import javax.persistence.criteria.JoinType;
 import java.util.Set;
 
-/*
-The problem with query methods is that we can only specify a fixed number of criteria.
-Also, the number of query methods increases rapidly as the use cases increases.
 
-At some point, there are many overlapping criteria across the query methods and if there is a change
-in any one of those, we’ll have to make changes in multiple query methods.
-
-Also, the length of the query method might increase significantly when we have lon
-g field names and multiple criteria in our query. Plus, it might take a while for someone
-to understand such a lengthy query and its purpose
-
-Specifications allow us to write queries programmatically.
-Because of this, we can build queries dynamically based on user input.
- */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class RecipeIngredientSpecifications {
 
-    /*
-     * The Criteria Query API allows us to join the two tables when creating the Specification.
-     *  As a result, we'll be able to include the fields from the Book entity inside our queries:
-     * */
     public static Specification<RecipeIngredient> amountIn(Set<Integer> amountList) {
         return (recipeIngredientRoot, criteriaQuery, criteriaBuilder) ->
                 criteriaBuilder.in(recipeIngredientRoot.get("amount")).value(amountList);

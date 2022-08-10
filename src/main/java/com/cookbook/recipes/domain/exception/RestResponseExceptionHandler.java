@@ -1,4 +1,4 @@
-package com.cookbook.recipes.domain.exceptoin;
+package com.cookbook.recipes.domain.exception;
 
 import com.cookbook.recipes.model.Problem;
 import org.springframework.http.ResponseEntity;
