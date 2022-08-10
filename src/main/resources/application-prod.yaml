@@ -1,46 +1,27 @@
 server:
-  port:
-    9090
+  port: 9090
   servlet:
-    context-path:
-      /v1
+    context-path: /v1
 
 spring:
   datasource:
-    url:
-      jdbc:h2:mem:prod-db
-    driverClassName:
-      org.h2.Driver
-    username:
-      prod
-    password:
-      prod
+    url: jdbc:h2:mem:prod-db
+    driverClassName: org.h2.Driver
+    username: prod
+    password: prod
   jpa:
-    database-platform=org:
-      org.hibernate.dialect.H2Dialect
-    defer-datasource-initialization:
-      true
-    show-sql:
-      true
+    database-platform=org: org.hibernate.dialect.H2Dialect
+    defer-datasource-initialization: true
+    show-sql: true
     properties:
       hibernate:
-        format_sql:
-          true
+        format_sql: true
   h2:
     console:
-      enabled:
-        true  # Enable embedded GUI console in a browser http://localhost:9090/h2-console
+      enabled: true
+      path: /h2-console # Enable embedded GUI console in a browser http://localhost:9090/v1/h2-console
 
   sql:
     init:
       data-locations:
         classpath:data/ingredients.sql, classpath:data/recipes.sql, classpath:data/recipe-ingredients.sql
-
-  # Swagger API
-  mvc:
-    pathmatch:
-      matching-strategy:
-        ANT_PATH_MATCHER
-
-
-

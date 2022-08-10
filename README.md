@@ -23,6 +23,16 @@ In a browser:
     * Url: jdbc:h2:mem:test-db
     * Root username: dev and password: dev
 
+### 3. Swagger UI
+Swagger UI is available:
+* Copy below link to a browser
+```shell
+http://localhost:8082/api/swagger-ui/index.html
+```
+* or copy recipes-api.yaml from resources/api folder to
+```shell
+https://editor.swagger.io/
+```
 
 ## Start production environment
 
@@ -41,6 +51,16 @@ mvn spring-boot:run -Dspring-boot.run.arguments=--spring.profiles.active=prod
     * Url: jdbc:h2:mem:prod-db
     * Root username: prod and password: prod
 
+### 3. Swagger UI
+Swagger UI is available:
+* Copy below link to a browser
+```shell
+http://localhost:9090/v1/swagger-ui/index.html
+```
+* or copy recipes-api.yaml from resources/api folder to
+```shell
+https://editor.swagger.io/
+```
 
 ## SQL command to represent all data
  
@@ -56,17 +76,6 @@ INNER JOIN ingredients i
 ON i.id = ri.ingredient_id;
 ```
 
-## Swagger UI
-
-Swagger UI is available:
-* Copy recipes-api.yaml from recources/api folder to
-```shell
-https://editor.swagger.io/
-```
-* or use
-```shell
-http://localhost:8082/api/swagger-ui/index.html
-```
 
 
 

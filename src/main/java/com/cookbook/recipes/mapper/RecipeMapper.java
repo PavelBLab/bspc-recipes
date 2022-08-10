@@ -61,6 +61,8 @@ public interface RecipeMapper {
     @Mapping(target = "name", source = "name")
     Ingredient mapIngredient(final GeneratedIngredient generatedIngredient);
 
+    Measure mapMeasure(final GeneratedMeasure generatedMeasure);
+
     @Named("sanitizeInvalidCharacters")
     default String sanitizeInvalidCharacters(final String instruction) {
         return TransformHelper.sanitize(instruction);

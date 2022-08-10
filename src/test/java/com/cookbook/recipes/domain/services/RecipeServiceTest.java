@@ -1,6 +1,6 @@
 package com.cookbook.recipes.domain.services;
 
-import com.cookbook.recipes.domain.exceptoin.BusinessServiceException;
+import com.cookbook.recipes.domain.exception.BusinessServiceException;
 import com.cookbook.recipes.mapper.RecipeMapper;
 import com.cookbook.recipes.mapper.SearchFilterMapper;
 import com.cookbook.recipes.model.*;
@@ -25,6 +25,7 @@ import static com.cookbook.recipes.util.TestDataFactory.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
+import static org.springframework.data.jpa.domain.Specification.where;
 
 @ExtendWith({MockitoExtension.class})
 class RecipeServiceTest {
@@ -55,6 +56,8 @@ class RecipeServiceTest {
 
         val generatedRecipesActual = recipeService.getAllRecipes();
 
+        // Verify in Mockito simply means that you want to check if a certain method of a mock object has been called
+        // by specific number of times. When doing verification that a method was called exactly once
         verify(recipeMapper).toGeneratedRecipe(recipe);
         assertThat(generatedRecipesActual.size()).isEqualTo(1);
         assertThat(generatedRecipesActual.get(0)).isEqualTo(generatedRecipeExpected);
@@ -69,7 +72,9 @@ class RecipeServiceTest {
 
         val generatedRecipeActual = recipeService.getRecipeById(RECIPE_ID_1);
 
-        verify(recipeMapper).toGeneratedRecipe(recipe);
+        // Verify in Mockito simply means that you want to check if a certain method of a mock object has been called
+        // by specific number of times. When doing verification that a method was called exactly once
+        verify(recipeMapper, times(1)).toGeneratedRecipe(recipe);
         assertThat(generatedRecipeActual).isEqualTo(generatedRecipeExpected);
     }
 
@@ -104,6 +109,8 @@ class RecipeServiceTest {
         val generatedRecipesActual = recipeService
                 .postRecipesBySearchFilter(generatedSearchFilter);
 
+        // Verify in Mockito simply means that you want to check if a certain method of a mock object has been called
+        // by specific number of times. When doing verification that a method was called exactly once
         verify(recipeMapper).toGeneratedRecipe(recipe);
         assertThat(generatedRecipesActual.size()).isEqualTo(1);
         assertThat(generatedRecipesActual.get(0)).isEqualTo(generatedRecipeExpected);
@@ -130,6 +137,8 @@ class RecipeServiceTest {
         val generatedRecipesActual = recipeService
                 .postRecipesBySearchFilter(generatedSearchFilter);
 
+        // Verify in Mockito simply means that you want to check if a certain method of a mock object has been called
+        // by specific number of times. When doing verification that a method was called exactly once
         verify(recipeMapper).toGeneratedRecipe(recipe);
         assertThat(generatedRecipesActual.size()).isEqualTo(1);
         assertThat(generatedRecipesActual.get(0)).isEqualTo(generatedRecipeExpected);
@@ -156,6 +165,8 @@ class RecipeServiceTest {
         val generatedRecipesActual = recipeService
                 .postRecipesBySearchFilter(generatedSearchFilter);
 
+        // Verify in Mockito simply means that you want to check if a certain method of a mock object has been called
+        // by specific number of times. When doing verification that a method was called exactly once
         verify(recipeMapper).toGeneratedRecipe(recipe);
         assertThat(generatedRecipesActual.size()).isEqualTo(1);
         assertThat(generatedRecipesActual.get(0)).isEqualTo(generatedRecipeExpected);
@@ -184,6 +195,8 @@ class RecipeServiceTest {
         val generatedRecipesActual = recipeService
                 .postRecipesBySearchFilter(generatedSearchFilter);
 
+        // Verify in Mockito simply means that you want to check if a certain method of a mock object has been called
+        // by specific number of times. When doing verification that a method was called exactly once
         verify(recipeMapper).toGeneratedRecipe(recipe);
         assertThat(generatedRecipesActual.size()).isEqualTo(1);
         assertThat(generatedRecipesActual.get(0)).isEqualTo(generatedRecipeExpected);
@@ -260,8 +273,7 @@ class RecipeServiceTest {
         val generatedRecipeExpected = getGeneratedRecipe();
 
         when(searchFilterMapper.toSearchFilter(any())).thenReturn(searchFilter);
-        when(recipeRepository.findByRecipeIngredientsIngredientNameIn(any())).thenReturn(Set.of(recipe));
-        when(recipeRepository.findByIdNotIn(Set.of(RECIPE_ID_1))).thenReturn(List.of(recipe));
+        when(recipeRepository.findAll(where(any()))).thenReturn(List.of(recipe));
         when(recipeMapper.toGeneratedRecipe(any())).thenReturn(generatedRecipeExpected);
 
         val generatedRecipesActual = recipeService
@@ -377,9 +389,7 @@ class RecipeServiceTest {
         val generatedRecipeExpected = getGeneratedRecipe();
 
         when(searchFilterMapper.toSearchFilter(any())).thenReturn(searchFilter);
-        when(recipeRepository.findByInstructionContainingIgnoreCaseAndRecipeIngredientsIngredientNameNotIn(
-                anyString(), any())).thenReturn(Set.of(recipe));
-        when(recipeRepository.findByIdIn(Set.of(RECIPE_ID_1))).thenReturn(List.of(recipe));
+        when(recipeRepository.findAll(where(any()))).thenReturn(List.of(recipe));
         when(recipeMapper.toGeneratedRecipe(any())).thenReturn(generatedRecipeExpected);
 
         val generatedRecipesActual = recipeService
@@ -421,24 +431,28 @@ class RecipeServiceTest {
     @Test
     void createRecipe() {
         val recipe = getRecipe();
-        val recipeIngredients = List.of(getRecipeIngredient());
         val ingredient = getIngredient();
         val generatedRecipe = getGeneratedRecipe();
+        val recipeIngredientsExpected = List.of(getRecipeIngredient());
 
         when(recipeRepository.getRecipeById(anyLong())).thenReturn(Optional.empty());
         when(recipeMapper.toRecipe(any())).thenReturn(recipe);
         when(recipeMapper.mapRecipeIngredient(any())).thenReturn(getRecipeIngredient());
-        when(ingredientRepository.findByName(anyString())).thenReturn(Optional.of(ingredient));
-        when(recipeIngredientRepository.saveAll(any())).thenReturn(recipeIngredients);
+        when(ingredientRepository.findAll(where(any()))).thenReturn(List.of(ingredient));
+        when(recipeIngredientRepository.saveAll(any())).thenReturn(recipeIngredientsExpected);
 
         recipeService.createRecipe(generatedRecipe);
 
-        verify(recipeIngredientRepository).saveAll(recipeIngredientArgumentCaptor.capture());
+        // Verify in Mockito simply means that you want to check if a certain method of a mock object has been called
+        // by specific number of times. When doing verification that a method was called exactly once
+        verify(recipeIngredientRepository, times(1)).saveAll(recipeIngredientArgumentCaptor.capture());
 
         val recipeIngredientArgumentCaptorValue = recipeIngredientArgumentCaptor.getValue();
 
-        assertThat(recipeIngredients.size()).isEqualTo(recipeIngredientArgumentCaptorValue.size());
-        assertThat(recipeIngredients).usingRecursiveComparison().isEqualTo(recipeIngredientArgumentCaptorValue);
+        assertThat(recipeIngredientsExpected.size()).isEqualTo(recipeIngredientArgumentCaptorValue.size());
+        // usingRecursiveComparison() comparing objects field by field as it offers more flexibility,
+        // better reporting and an easier to use API.
+        assertThat(recipeIngredientsExpected).usingRecursiveComparison().isEqualTo(recipeIngredientArgumentCaptorValue);
     }
 
     @Test
@@ -451,20 +465,23 @@ class RecipeServiceTest {
                 () -> recipeService.createRecipe(generatedRecipe));
 
         assertThat(exception.getMessage()).isEqualTo("Recipe with id: 1 already exists");
-        assertThat(exception.getHttpStatus()).isEqualTo(HttpStatus.FORBIDDEN);
+        assertThat(exception.getHttpStatus()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
 
     @Test
     void updateRecipe() {
         val recipe = getRecipe();
-        val recipeIngredients = List.of(getRecipeIngredient());
         val ingredient = getIngredient();
         val generatedRecipe = getGeneratedRecipe();
+        val recipeIngredients = List.of(getRecipeIngredient());
+        val recipeIngredientExpected = getRecipeIngredient();
+        recipeIngredientExpected.setAmount(200);
 
         when(recipeRepository.getRecipeById(anyLong())).thenReturn(Optional.of(recipe));
+        when(recipeIngredientRepository.findAll(where(any()))).thenReturn(recipeIngredients);
+        when(ingredientRepository.findAll(where(any()))).thenReturn(List.of(ingredient));
         when(recipeMapper.toRecipe(any())).thenReturn(recipe);
-        when(recipeMapper.mapRecipeIngredient(any())).thenReturn(getRecipeIngredient());
-        when(ingredientRepository.findByName(anyString())).thenReturn(Optional.of(ingredient));
+        when(recipeMapper.mapRecipeIngredient(any())).thenReturn(recipeIngredientExpected);
         when(recipeIngredientRepository.saveAll(any())).thenReturn(recipeIngredients);
 
         recipeService.updateRecipe(RECIPE_ID_1, generatedRecipe);
@@ -473,8 +490,11 @@ class RecipeServiceTest {
 
         val recipeIngredientArgumentCaptorValue = recipeIngredientArgumentCaptor.getValue();
 
-        assertThat(recipeIngredients.size()).isEqualTo(recipeIngredientArgumentCaptorValue.size());
-        assertThat(recipeIngredients).usingRecursiveComparison().isEqualTo(recipeIngredientArgumentCaptorValue);
+        assertThat(recipeIngredientArgumentCaptorValue.size()).isEqualTo(1);
+        // usingRecursiveComparison() comparing objects field by field as it offers more flexibility,
+        // better reporting and an easier to use API.
+        assertThat(recipeIngredientArgumentCaptorValue).usingRecursiveComparison()
+                .isEqualTo(List.of(recipeIngredientExpected));
     }
 
     @Test
@@ -486,7 +506,7 @@ class RecipeServiceTest {
                 () -> recipeService.updateRecipe(RECIPE_ID_1, generatedRecipe));
 
         assertThat(exception.getMessage()).isEqualTo("Recipe with id: 1 does not exist");
-        assertThat(exception.getHttpStatus()).isEqualTo(HttpStatus.FORBIDDEN);
+        assertThat(exception.getHttpStatus()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
 
     @Test
@@ -496,6 +516,8 @@ class RecipeServiceTest {
 
         recipeService.deleteRecipe(RECIPE_ID_1);
 
+        // Verify in Mockito simply means that you want to check if a certain method of a mock object has been called
+        // by specific number of times. When doing verification that a method was called exactly once
         verify(recipeRepository, times(1)).deleteById(RECIPE_ID_1);
     }
 

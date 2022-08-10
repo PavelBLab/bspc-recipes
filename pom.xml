@@ -133,7 +133,6 @@
                             <library>spring-boot</library>
                             <apiPackage>com.cookbook.recipes.api</apiPackage>
                             <modelPackage>com.cookbook.recipes.model</modelPackage>
-                            <!--                            <invokerPackage>com.cookbook.recipes.client</invokerPackage>-->
                             <configOptions>
                                 <immutableModels>true</immutableModels>
                                 <useBeanValidation>true</useBeanValidation>
